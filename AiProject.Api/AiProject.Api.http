@@ -1,0 +1,164 @@
+﻿### ===========================================
+### AiContext API - Colección de Pruebas HTTP
+### ===========================================
+### Usa este archivo directamente en Visual Studio 2022
+### o en VS Code con la extensión REST Client
+### ===========================================
+
+@baseUrl = https://localhost:7023
+@baseUrlHttp = http://localhost:5214
+
+### ===========================================
+### GENERAL ENDPOINTS
+### ===========================================
+
+### 1. Root - Información de la API
+GET {{baseUrl}}/
+Accept: application/json
+
+###
+
+### ===========================================
+### AI PROCESSING ENDPOINTS
+### ===========================================
+
+### 2. Health Check - Verifica que el servicio está activo
+GET {{baseUrl}}/api/ai/health
+Accept: application/json
+
+###
+
+### 3. Process Prompt - Caso básico
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "Hola, esta es una prueba básica"
+}
+
+###
+
+### 4. Process Prompt - Prompt más largo
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "Este es un prompt más largo para probar cómo el sistema maneja textos con más contenido. Podríamos estar haciendo una pregunta compleja o pidiendo que se procese información detallada."
+}
+
+###
+
+### 5. Process Prompt - Con caracteres especiales
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "¿Cómo está el clima? 🌤️ ¡Hace un día increíble! #coding"
+}
+
+###
+
+### 6. Process Prompt - CASO DE ERROR: Prompt vacío
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": ""
+}
+
+###
+
+### 7. Process Prompt - CASO DE ERROR: Prompt solo con espacios
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "   "
+}
+
+###
+
+### 8. Process Prompt - CASO DE ERROR: Body mal formado
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "wrong_field": "esto no va a funcionar"
+}
+
+###
+
+### ===========================================
+### TESTS DE RENDIMIENTO (Múltiples requests)
+### ===========================================
+
+### 9. Request múltiple - Ejecuta varias veces para probar concurrencia
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "Test de concurrencia - Request #1"
+}
+
+###
+
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "Test de concurrencia - Request #2"
+}
+
+###
+
+POST {{baseUrl}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "Test de concurrencia - Request #3"
+}
+
+###
+
+### ===========================================
+### TESTS CON HTTP (no HTTPS) - Para desarrollo local
+### ===========================================
+
+### 10. Process via HTTP (no HTTPS)
+POST {{baseUrlHttp}}/api/ai/process
+Content-Type: application/json
+
+{
+  "prompt": "Testing via HTTP instead of HTTPS"
+}
+
+###
+
+### ===========================================
+### NOTAS PARA APRENDER
+### ===========================================
+# 
+# ¿Qué es este archivo?
+# - Es un archivo de pruebas HTTP que puedes ejecutar directamente en Visual Studio
+# - Cada bloque separado por ### es una request independiente
+# - Haz clic en "Send Request" que aparece sobre cada request
+#
+# ¿Cómo usarlo?
+# 1. Asegúrate de que tu API esté corriendo (F5 en Visual Studio)
+# 2. Haz clic en "Send Request" sobre cualquier request
+# 3. Ve la respuesta en el panel derecho
+#
+# Variables:
+# - @baseUrl: La URL base de tu API (HTTPS)
+# - @baseUrlHttp: La URL base sin HTTPS (para testing local)
+#
+# Status Codes esperados:
+# - 200 OK: Todo funcionó correctamente
+# - 400 Bad Request: El cliente envió datos inválidos
+# - 500 Internal Server Error: Error en el servidor
+#
+# ¿Por qué algunos tests deben fallar?
+# - Las requests 6, 7 y 8 están diseñadas para fallar
+# - Nos ayudan a verificar que el manejo de errores funciona correctamente
+#
+###
